@@ -169,6 +169,7 @@ int main(){
 	int i;
 	int s1,s2;
 	int *num1, *num2,*num3,*num4;
+	int num;
 	
 	
 	while (end != EOF){
@@ -194,7 +195,9 @@ int main(){
 		}//吸收操作符多余的字符
 		a = input(str1, op, opnext);
 		b = input(str2, op, opnext);
-		if (a != 1 || b != 1){ printf("ERROR INPUT!\n"); }//判断输入格式，正确进入计算，错误输出错误信息
+		num = atoi(str2);
+		if (op == '/'&&num == 0){ printf("ERROR INPUT!\n"); }
+		else if (a != 1 || b != 1){ printf("ERROR INPUT!\n"); }//判断输入格式，正确进入计算，错误输出错误信息
 		else{
 			num1 = (int *)malloc(M * sizeof(int));
 			num2 = (int *)malloc(M * sizeof(int));
