@@ -1,6 +1,7 @@
 ﻿#include "game.h"
 //LSL
 #include <stdlib.h>
+#include <SFML/Audio.hpp>
 #define TYPE_MAX 2
 #define TYPE_MIN 1
 #define BUFF_TIME 1000
@@ -30,11 +31,13 @@ void Game::init_array(Bullet **bullets, Tank **tanks,Buff **buffs){
 		tanks[i] = NULL;
 		
 	}
+	//////////////////////////////////////////////////////////////////////////////////////////
 	for (i = 0; i < 2; i++){
 		buffs[i] = NULL;
 	}
+	//////////////////////////////////////////////////////
 }
-//刘松林添加
+//////////////////////////////////////////////////////////////////////////////////////////////////刘松林添加
 void Game::buff_clear_allbullets(Bullet **bullets){
 	int i;
 	for (i = 0; i < 10; i++){
@@ -43,7 +46,7 @@ void Game::buff_clear_allbullets(Bullet **bullets){
 		bullets[i] = NULL;
 	}
 }
-
+///////////////////////////////////////////////////////////////////////////////
 Game::Game() {
 	this->init_array(bullets, tanks,buffs);
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "TANK");
@@ -53,15 +56,22 @@ Game::Game() {
 	Tank enemy_tank;
 	enemy_tank.setPosition(350, 450);
 	enemy_tank.gun.setPosition(350, 450);
-	int temp = 0;//
+	int temp = 0;///////////////////////////////////////////////////////////////////////////
 	sf::Vector2f buff_position;
 	//buff_position.x = 100;//
 	//buff_position.y = 50;//
 
 	sf::Event event;
-
-
-
+	////////////////////////////////////////////////////////////////LSL music
+	sf::SoundBuffer shotbuffer;
+	shotbuffer.loadFromFile("shot.wav");
+	sf::Sound shotsound;
+	shotsound.setBuffer(shotbuffer);
+	sf::SoundBuffer gameoverbuffer;
+	bool x=gameoverbuffer.loadFromFile("gameover.wav");
+	sf::Sound gameoversound;
+	gameoversound.setBuffer(gameoverbuffer);
+	////////////////////////////////////////////////////////////////////////////////
 
 	sf::Texture startgame_texture;
 	if (!startgame_texture.loadFromFile("gamestart.jpg")) {
@@ -102,26 +112,10 @@ Game::Game() {
 	GetLocalTime(&sys);
 	int fire_time = sys.wSecond;*/
 	sf::Time fire_time = clock1.restart();
-	//	sf::Event event;
-	//Buff buff;//
-	//buff1.type = temp;//
+	
 	while (window.isOpen())
 	{
-		//LSL
-		/*
-		temp++;
-		if (temp == BUFF_TIME){
-			for (int i = 0; i < 5; i++){
-				if (buffs[i] == NULL){
-					int type = (rand() % (TYPE_MAX - TYPE_MIN + 1)) + TYPE_MIN;
-					buffs[i] = new Buff(type);
-					break;
-				}
-			}
-			temp = 0;
-		}
-		//*/
-		//window.draw(buff1);//
+		
 		while (window.pollEvent(event))
 		{
 			is_exit(event, window);
@@ -135,6 +129,7 @@ Game::Game() {
 					for (int i = 0; i < 10; i++) {
 						if (bullets[i] == NULL) {
 							bullets[i] = new Bullet(tanks[0]->fire(window));
+							shotsound.play();/////////////////////////////////////////////////////////////music
 							break;
 						}
 					}
@@ -161,17 +156,17 @@ Game::Game() {
 			}
 		}
 		enemy_tank.enemy_move();
-		//LSL
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////LSL
 		temp++;
 		if (temp == BUFF_TIME){
-			printf("%d\n", temp);
+			//printf("%d\n", temp);
 			for (int i = 0; i < 2; i++){
 				if (buffs[i] == NULL){
 					int type = (rand() % (TYPE_MAX - TYPE_MIN + 1)) + TYPE_MIN;
 					//Buff buff(type);
 					//buffs[i] = &buff;
 					buffs[i] = new Buff(type);
-					printf("%d\n", buffs[i]->type);
+					//printf("%d\n", buffs[i]->type);
 					break;
 				}
 			}
@@ -193,16 +188,16 @@ Game::Game() {
 				}
 			}
 		}
-		//
+		//////////////////////////////////////////////////////////////////////////////////////////////////////
 		window.clear(sf::Color(225, 225, 225));
 
 		window.draw(shield_a);
-		//LSL
+		///////////////////////////////////////////////////////////////////////////////////////LSL
 		for (int i = 0; i < 2; i++){
 			if (buffs[i]!=NULL&&buffs[i]->type != 0){
 				window.draw(*buffs[i]);
 			}
-		}//
+		}//////////////////////////////////////////////////////////////////////////////////////////////////
 		/*if (enemy_tank.is_exist == true)
 		{
 		window.draw(enemy_tank);
@@ -220,6 +215,7 @@ Game::Game() {
 			if (bullets[i] != NULL) {
 				shield_a.A_check_collsion_with_bullet(*bullets[i]);
 				tanks[0]->bullet_collision(*bullets[i]);
+
 				enemy_tank.bullet_collision(*bullets[i]);
 
 				for (int j = i + 1; j<10; j++) {
@@ -230,8 +226,14 @@ Game::Game() {
 				}
 
 			}
+			
 		}
-
+		/////////////////////////////////////////////////////////////////////////////////////////lsl music
+		if (tanks[0]->is_exist == false){
+			
+			gameoversound.play();
+		}
+		///////////////////////////////////////////////////////////////////////////////
 
 		shield_a.A_check_collsion_with_tank(*tanks[0]);
 		shield_a.A_check_collsion_with_tank(enemy_tank);

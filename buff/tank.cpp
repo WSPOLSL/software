@@ -1,6 +1,7 @@
 #include "tank.h"
 #include "math.h"
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 void rotateVector(sf::Vector2f &v, float angle)
 {
@@ -395,16 +396,18 @@ void Tank::bullet_collision(Bullet &bullet)
 	if (distance(p_bullet, vertex0, vertex1) <= (TANK_WIDTH + 6) || distance(p_bullet, vertex2, vertex3) <= (TANK_WIDTH + 6)
 		|| distance(p_bullet, vertex1, vertex2) <= (TANK_HEIGHT + 6) || distance(p_bullet, vertex3, vertex0) <= (TANK_HEIGHT + 6))
 	{
-		if (this->type == 1){//LSL
+		
+		if (this->type == 1){
 			this->is_exist = false;
 			bullet.is_exist = false;
+			
 		}
-		//LSL
+		/////////////////////////////////////////////////////////////////////////////////LSL
 		else{
 			this->type = 1;
 			this->tank_texture.loadFromFile("tank.png");
 		}
-		//
+		////////////////////////////////////////////////////////////////////////
 	}
 
 }
@@ -414,21 +417,22 @@ void Tank::tank_collison(Tank other_tank)
 	float distance = sqrt(vector.x*vector.x + vector.y*vector.y);
 	if (distance < 2 * sqrt(TANK_WIDTH*TANK_WIDTH + TANK_HEIGHT*TANK_HEIGHT))
 	{//相撞都认为撞毁
-		if (this->type == 1){//LSL
+		if (this->type == 1){
 			this->is_exist = false;
 			other_tank.is_exist = false;
+			
 		}
-		//LSL
+		////////////////////////////////////////////////////////////////////LSL
 		else{
 			this->type = 1;
 			this->tank_texture.loadFromFile("tank.png");
 		}
-		//
+		////////////////////////////////////////////////////////////////////
 	}
 }
-//LSL
+/////////////////////////////////////////////////////////////////////LSL
 void Tank::reset_tank_texture(){
 	this->tank_texture.loadFromFile("tank2.png");
 	this->type = 2;
 }
-//
+/////////////////////////////////////////////////////////////////////

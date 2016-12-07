@@ -26,9 +26,9 @@ public:
 	void Draw_Tank(Tank &tank, sf::Time elapsed, sf::RenderWindow &window);
 	void init_array(Bullet **bullets, Tank **tanks,Buff **buffs);
 
-	//刘松林添加
+	//////////////////////////////////////////////////////////////////////刘松林添加
 	void buff_clear_allbullets(Bullet **bullets);
-
+	//////////////////////////////////////////////////////////////
 };
 
 
