@@ -1,12 +1,16 @@
-
+ï»¿
 #include "shield.h"
+
+
+
+
 
 
 Shield::Shield(unsigned int category) {
 	switch (category) {
 	case SHIELD_A:
 		//            ConvexShape(6);
-		setshape_A();
+		create_map_A();
 		break;
 	case SHIELD_B:
 		//            ConvexShape(8);
@@ -32,10 +36,10 @@ Shield::Shield(unsigned int category) {
 	}
 }
 
-void Shield::A_check_collsion_with_bullet(Bullet &bullet) {
+void Shield::check_collsion_with_bullet(Bullet &bullet, float position_x, float position_y) {
 	sf::Vector2f centre_A, bullet_position;
-	centre_A.x = a_position_x + 20;
-	centre_A.y = a_position_y + 20;
+	centre_A.x = position_x + 20;
+	centre_A.y = position_y + 20;
 
 	bullet_position = bullet.getPosition();
 
@@ -43,16 +47,22 @@ void Shield::A_check_collsion_with_bullet(Bullet &bullet) {
 	float y = bullet_position.y - centre_A.y;
 
 	if (x<35 && x>-35 && y<35 && y>-35) {
-		if ((y>x && y>-x) || (y<x && y<-x)) {
-			bullet.reverse_dy();
+		if (y>x && y>-x) {
+			bullet.reverse_dy_up();
 		}
-		else { bullet.reverse_dx(); }
+		else if (y<x && y<-x) {
+			bullet.reverse_dy_down();
+		}
+		else if (y<x && y>-x) {
+			bullet.reverse_dx_right();
+		}
+		else { bullet.reverse_dx_left(); }
 	}
 }
-void Shield::A_check_collsion_with_tank(Tank &tank) {
+void Shield::check_collsion_with_tank(Tank &tank, float position_x, float position_y) {
 	sf::Vector2f centre_A, bullet_position, tank_position;
-	centre_A.x = a_position_x + 25;
-	centre_A.y = a_position_y + 25;
+	centre_A.x = position_x + 25;
+	centre_A.y = position_y + 25;
 
 	tank_position = tank.getPosition();
 
@@ -64,29 +74,29 @@ void Shield::A_check_collsion_with_tank(Tank &tank) {
 		sf::Vector2f left_up_point, right_down_point, right_up_point, left_down_point;
 		float l = sqrt(TANK_WIDTH*TANK_WIDTH + TANK_HEIGHT*TANK_HEIGHT)*0.5;
 		sf::Vector2f p = tank.getPosition();
-		// ×óÉÏ
+		// â—ŠÃ›â€¦Å“
 		float angle = 3.1416*0.25 - tank.getRotation() TO_RADIAN;
 
 		left_up_point.x = p.x - l*sin(angle);
 		left_up_point.y = p.y - l*cos(angle);
 
-		//ÓÒÏÂ
+		//â€â€œÅ“Â¬
 
 		right_down_point.x = p.x + l*sin(angle);
 		right_down_point.y = p.y + l*cos(angle);
-		//ÓÒÉÏ
+		//â€â€œâ€¦Å“
 		angle = 3.1415926535*0.25 + tank.getRotation() TO_RADIAN;
 		right_up_point.x = p.x + l*sin(angle);
 		right_up_point.y = p.y - l*cos(angle);
 
 
 
-		//×óÏÂ
+		//â—ŠÃ›Å“Â¬
 		left_down_point.x = p.x - l*sin(angle);
 		left_down_point.y = p.y + l*cos(angle);
 
 
-		//Ç°ÃæÈ¡10¸öµã
+		//Â«âˆžâˆšÃŠÂ»Â°10âˆË†Âµâ€ž
 		float k = (right_up_point.y - left_up_point.y) / (right_up_point.x - left_up_point.x);
 		float dx = (right_up_point.x - left_up_point.x) / 9;
 		//        float x,y;
@@ -109,7 +119,7 @@ void Shield::A_check_collsion_with_tank(Tank &tank) {
 
 
 
-		//ºóÃæÈ¡10¸öµã
+		//âˆ«Ã›âˆšÃŠÂ»Â°10âˆË†Âµâ€ž
 		k = (right_down_point.y - left_down_point.y) / (right_down_point.x - left_down_point.x);
 		dx = (right_down_point.x - left_down_point.x) / 9;
 		//        float x,y;
@@ -137,26 +147,63 @@ void Shield::A_check_collsion_with_tank(Tank &tank) {
 	}
 
 }
+void Shield::init_shield(){
+	//float shield_position_array[17][2] = { { 16, 16 }, { 100, 100 }, { 100, 150 }, { 150, 150 }, { 200, 150 }, { 600, 100 },
+	//{ 650, 100 }, { 650, 150 }, { 100, 350 }, { 150, 350 },
+	//{ 150, 400 }, { 150, 450 }, { 100, 450 }, { 550, 450 }, { 600, 400 }, { 600, 450 }, { 650, 450 } };
+	//float shield_position_array[5][2] = { { 4, 4 }, { 0, 0 }, { 0, 50 }, { 50, 50 }, { 100, 50 } };
+	shield_position_array[0][0] = 16;
+	shield_position_array[0][1] = 16;
 
-void Shield::setshape_A() {
-	//*
+	shield_position_array[1][0] = 100;
+	shield_position_array[1][1] = 100;
 
-	// set_block_counts(get_block_counts()+3);
+	shield_position_array[2][0] = 100;
+	shield_position_array[2][1] = 150;
 
-	this->setPointCount(4);
-	this->setPoint(0, sf::Vector2f(0, 0));
-	this->setPoint(1, sf::Vector2f(0, 50));
-	this->setPoint(2, sf::Vector2f(50, 50));
-	this->setPoint(3, sf::Vector2f(50, 0));
+	shield_position_array[3][0] = 150;
+	shield_position_array[3][1] = 150;
 
+	shield_position_array[4][0] = 200;
+	shield_position_array[4][1] = 150;
 
+	shield_position_array[5][0] = 600;
+	shield_position_array[5][1] = 100;
 
-	this->setOutlineThickness(5);
-	this->setOutlineColor(sf::Color::Red);
-	//   this->setFillColor(sf::Color::Red);
-	this->setPosition(a_position_x, a_position_y);
+	shield_position_array[6][0] = 650;
+	shield_position_array[6][1] = 100;
 
-}
+	shield_position_array[7][0] = 650;
+	shield_position_array[7][1] = 150;
+	//{ 100, 350 }, { 150, 350 },
+	shield_position_array[8][0] = 100;
+	shield_position_array[8][1] = 350;
+
+	shield_position_array[9][0] = 150;
+	shield_position_array[9][1] = 350;
+	//{ 150, 400 }, { 150, 450 }, { 100, 450 }, { 550, 450 }, { 600, 400 }, { 600, 450 }, { 650, 450 } };
+	shield_position_array[10][0] = 150;
+	shield_position_array[10][1] = 400;
+
+	shield_position_array[11][0] = 150;
+	shield_position_array[11][1] = 450;
+
+	shield_position_array[12][0] = 100;
+	shield_position_array[12][1] = 450;
+
+	shield_position_array[13][0] = 550;
+	shield_position_array[13][1] = 450;
+
+	shield_position_array[14][0] = 600;
+	shield_position_array[14][1] = 400;
+
+	shield_position_array[15][0] = 600;
+	shield_position_array[15][1] = 450;
+
+	shield_position_array[16][0] = 650;
+	shield_position_array[16][1] = 450;
+};
+void Shield::create_map_A(){}
 
 void Shield::setshape_B() {
 
@@ -174,66 +221,5 @@ void Shield::setshape_B() {
 	add_centre(sf::Vector2f(200+75,200+75));
 	*/
 
-	this->setPointCount(8);
-	this->setPoint(0, sf::Vector2f(0, 0));
-	this->setPoint(1, sf::Vector2f(0, 150));
-	this->setPoint(2, sf::Vector2f(50, 150));
-	this->setPoint(3, sf::Vector2f(50, 100));
-	this->setPoint(4, sf::Vector2f(100, 100));
-	this->setPoint(5, sf::Vector2f(100, 50));
-	this->setPoint(6, sf::Vector2f(50, 50));
-	this->setPoint(7, sf::Vector2f(50, 0));
-
-
-	this->setFillColor(sf::Color::Red);
-	//   this->setOutlineThickness(3);
-	this->setPosition(600, 400);
 }
-/*
-void Shield::setshape_Cup(){
 
-
-this->setPointCount(3);
-this->setPoint(0, sf::Vector2f(0, 0));
-this->setPoint(1, sf::Vector2f(-50, -50));
-this->setPoint(2, sf::Vector2f(50, -50));
-
-
-this->setFillColor(sf::Color(ObjectGroup::red_up));
-this->setPosition(400, 300);
-
-}
-void Shield::setshape_Cdown(){
-
-this->setPointCount(3);
-this->setPoint(0, sf::Vector2f(0, 0));
-this->setPoint(1, sf::Vector2f(-50, 50));
-this->setPoint(2, sf::Vector2f(50, 50));
-
-
-this->setFillColor(sf::Color(ObjectGroup::red_down));
-this->setPosition(400, 300);
-}
-void Shield::setshape_Cleft(){
-
-this->setPointCount(3);
-this->setPoint(0, sf::Vector2f(0, 0));
-this->setPoint(1, sf::Vector2f(-50, -50));
-this->setPoint(2, sf::Vector2f(-50, 50));
-
-
-this->setFillColor(sf::Color(ObjectGroup::red_left));
-this->setPosition(400, 300);
-}
-void Shield::setshape_Cright(){
-
-this->setPointCount(3);
-this->setPoint(0, sf::Vector2f(0, 0));
-this->setPoint(1, sf::Vector2f(50, -50));
-this->setPoint(2, sf::Vector2f(50, 50));
-
-
-this->setFillColor(sf::Color(ObjectGroup::red_right));
-this->setPosition(400, 300);
-}
-*/

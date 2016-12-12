@@ -1,8 +1,16 @@
-#pragma once
 #include <SFML/Graphics.hpp>
 #include"tank.h"
-#define BUFF_HEIGHT 50
-#define BUFF_WIDTH 50
+#include"bullet.h"
+#define BUFF_HEIGHT 30
+#define BUFF_WIDTH 30
+
+#define BUFF_TANK_DISTANCE 40
+#define RAND_MAX_X  700
+#define RAND_MIN_X 50
+#define RAND_MAX_Y  600
+#define RAND_MIN_Y 50
+#define TYPE_MAX 2
+#define TYPE_MIN 1
 //using namespace std
 class Buff : public sf::RectangleShape
 {
@@ -12,9 +20,12 @@ public:
 	void buff_collision_handle_one();
 
 private:
-	
+
 	sf::Texture buff_texture;
 	bool is_exist = 0;
 public:
 	int type = 0;
+	void clear_all_bullets(Bullet *bullets[], int bullets_number);
+	void add_mytank_life(int &life);
 };
+

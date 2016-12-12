@@ -18,19 +18,27 @@
 #include "tank.h"
 #include <math.h>
 
-class Shield : public sf::ConvexShape
+class Shield
 {
 public:
 	Shield(unsigned int category);
+
+	float a_position_x = 0;
+	float a_position_y = 0;
+
+	sf::Sprite *map_array[20];
+	float shield_position_array[17][2];
+
 private:
-	int a_position_x = 400;
-	int a_position_y = 300;
+
+
 	int block_counts = 0;
 	sf::Vector2f* centre = new sf::Vector2f[20];
 	int centre_top = 0;
 
-public:
 
+public:
+	void init_shield();
 	int get_centre_top() { return centre_top; }
 	//   void add_centre(sf::Vector2f c){centre[centre_top]=c;centre_top++;}
 	sf::Vector2f get_Nth_centre(int n) { return centre[n]; }
@@ -38,14 +46,10 @@ public:
 	int get_block_counts() { return  block_counts; }
 
 public:
-	void setshape_A();
+	void create_map_A();
 	void setshape_B();
-	void A_check_collsion_with_bullet(Bullet &bullet);
-	void A_check_collsion_with_tank(Tank &tank); //   void setshape_C();
-	//   void setshape_Cup();
-	//   void setshape_Cdown();
-	//   void setshape_Cleft();
-	//   void setshape_Cright();
+	void check_collsion_with_bullet(Bullet &bullet, float position_x, float position_y);
+	void check_collsion_with_tank(Tank &tank, float position_x, float position_y);
 
 
 };

@@ -1,7 +1,6 @@
 #include "tank.h"
 #include "math.h"
 #include <iostream>
-#include <SFML/Audio.hpp>
 
 void rotateVector(sf::Vector2f &v, float angle)
 {
@@ -298,19 +297,19 @@ void Tank::move_tank(sf::Event &event)
 	{
 		switch (event.key.code)
 		{
-		case sf::Keyboard::Up:
+		case sf::Keyboard::W:
 			//case sf::Keyboard::W:
 			this->forward();
 			break;
-		case sf::Keyboard::Down:
+		case sf::Keyboard::S:
 			//case sf::Keyboard::S:
 			this->back();
 			break;
-		case sf::Keyboard::Left:
+		case sf::Keyboard::A:
 			//case sf::Keyboard::A:
 			this->clockwise();
 			break;
-		case sf::Keyboard::Right:
+		case sf::Keyboard::D:
 			//case sf::Keyboard::D:
 			this->anti_clockwise();
 			break;
@@ -325,15 +324,15 @@ void Tank::move_tank(sf::Event &event)
 	{
 		switch (event.key.code)
 		{
-		case sf::Keyboard::Up:
+		case sf::Keyboard::W:
 			this->stop_forward();
 			break;
-		case sf::Keyboard::Down:
+		case sf::Keyboard::S:
 			this->stop_back();
-		case sf::Keyboard::Left:
+		case sf::Keyboard::A:
 			this->stop_clockwise();
 			break;
-		case sf::Keyboard::Right:
+		case sf::Keyboard::D:
 			this->stop_anti_clockwise();
 			break;
 		case sf::Keyboard::Space:
@@ -367,9 +366,9 @@ Bullet Tank::enemy_fire2tank(Tank tank)
 	bullet.is_exist = true;
 	return bullet;
 }
-void Tank::enemy_move()
+void Tank::enemy_move(int seed)
 {
-	srand((int)time(0));
+	srand(seed*(int)time(0));
 	int state[4] = { 0 };
 	for (int i = 0; i < 4; i++)
 	{
@@ -396,43 +395,18 @@ void Tank::bullet_collision(Bullet &bullet)
 	if (distance(p_bullet, vertex0, vertex1) <= (TANK_WIDTH + 6) || distance(p_bullet, vertex2, vertex3) <= (TANK_WIDTH + 6)
 		|| distance(p_bullet, vertex1, vertex2) <= (TANK_HEIGHT + 6) || distance(p_bullet, vertex3, vertex0) <= (TANK_HEIGHT + 6))
 	{
-		
-		if (this->type == 1){
-			this->is_exist = false;
-			bullet.is_exist = false;
-			
-		}
-		/////////////////////////////////////////////////////////////////////////////////LSL
-		else{
-			this->type = 1;
-			this->tank_texture.loadFromFile("tank.png");
-		}
-		////////////////////////////////////////////////////////////////////////
+		this->is_exist = false;
+		bullet.is_exist = false;
 	}
 
 }
-void Tank::tank_collison(Tank other_tank)
+void Tank::tank_collison(Tank &other_tank)
 {
 	sf::Vector2f vector = this->getPosition() - other_tank.getPosition();
 	float distance = sqrt(vector.x*vector.x + vector.y*vector.y);
-	if (distance < 2 * sqrt(TANK_WIDTH*TANK_WIDTH + TANK_HEIGHT*TANK_HEIGHT))
+	if (distance < 2 * sqrt(TANK_WIDTH*TANK_WIDTH / 4 + TANK_HEIGHT*TANK_HEIGHT / 4))
 	{//相撞都认为撞毁
-		if (this->type == 1){
-			this->is_exist = false;
-			other_tank.is_exist = false;
-			
-		}
-		////////////////////////////////////////////////////////////////////LSL
-		else{
-			this->type = 1;
-			this->tank_texture.loadFromFile("tank.png");
-		}
-		////////////////////////////////////////////////////////////////////
+		this->is_exist = false;
+		other_tank.is_exist = false;
 	}
 }
-/////////////////////////////////////////////////////////////////////LSL
-void Tank::reset_tank_texture(){
-	this->tank_texture.loadFromFile("tank2.png");
-	this->type = 2;
-}
-/////////////////////////////////////////////////////////////////////
