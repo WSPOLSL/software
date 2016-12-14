@@ -2,6 +2,7 @@
 #define bullet_hpp
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <math.h>
 #define PI 3.1415926
 
@@ -11,8 +12,8 @@
 
 class Bullet : public sf::CircleShape {
 private:
-	float dx, dy;
 	sf::Vector2f bullet_v;
+	float dx, dy;
 	sf::Vector2f current_position;
 	sf::Vector2f up_point;
 	sf::Vector2f down_point;
@@ -34,20 +35,22 @@ public:
 		float angle_hudu;
 		angle_hudu = angle*PI / 180;
 		position_bullet.x = position.x + (gun_length + 15) * sin(angle_hudu);
-		position_bullet.y = position.y - (gun_length + 15) * cos(angle_hudu);
+		position_bullet.y = position.y - (gun_length + 15)* cos(angle_hudu);
 
 		this->setPosition(position_bullet);
 		bullet_v.x = SPEED*sin(angle_hudu);
 		bullet_v.y = -SPEED*cos(angle_hudu);
 	}
-	void reverse_dx();
-	void reverse_dy();
+	void reverse_dx_left();
+	void reverse_dx_right();
+	void reverse_dy_up();
+	void reverse_dy_down();
 	void bullet_collision_check(Bullet *bullet);
 	void horizontal_collide();
 	void vertical_collide();
 	void reset_collision();
 
-	void update(sf::Time elapsed);
+	void update(sf::Time elapsed, sf::Sound &knocksound);/////////////////////////////////
 
 
 

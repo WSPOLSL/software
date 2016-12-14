@@ -3,6 +3,7 @@
 #define game_hpp
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <stdio.h>
 #include "bullet.h"
 #include "tank.h"
@@ -17,7 +18,7 @@
 
 
 #define ENEMY_TANKS_CREATE_TIME_S 5
-#define BUFF_CREATE_TIME_S 5
+#define BUFF_CREATE_TIME_S 20
 
 
 class Game {
